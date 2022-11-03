@@ -25,16 +25,11 @@ def _add_required_headers(endpoint: str, headers: Dict[str, str]):
         raise ValidationException(
             "Unexpected endpoint ({endpoint}) provided to serializer"
         )
-    headers.update(
-        {
-            "user-agent": f"transcribe-streaming-sdk-{version}",
-            "host": urlparts.hostname,
-        }
-    )
+    headers |= {
+        "user-agent": f"transcribe-streaming-sdk-{version}",
+        "host": urlparts.hostname,
+    }
 
 
 def ensure_boolean(val):
-    if isinstance(val, bool):
-        return val
-    else:
-        return val.lower() == "true"
+    return val if isinstance(val, bool) else val.lower() == "true"

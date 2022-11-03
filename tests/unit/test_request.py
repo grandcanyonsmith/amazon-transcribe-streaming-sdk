@@ -104,7 +104,7 @@ class TestHeadersDict:
         }
         hdict = HeadersDict()
         hdict.update(headers)
-        for key in headers.keys():
+        for key in headers:
             assert headers[key] == hdict[key]
 
     @pytest.mark.parametrize(

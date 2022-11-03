@@ -54,10 +54,8 @@ class InvalidHeadersLength(ParserError):
     """Headers length is longer than the maximum."""
 
     def __init__(self, length: int):
-        message = "Header length of %s exceeded the maximum of %s" % (
-            length,
-            _MAX_HEADERS_LENGTH,
-        )
+        message = f"Header length of {length} exceeded the maximum of {_MAX_HEADERS_LENGTH}"
+
         super().__init__(message)
 
 
@@ -65,10 +63,8 @@ class InvalidPayloadLength(ParserError):
     """Payload length is longer than the maximum."""
 
     def __init__(self, length: int):
-        message = "Payload length of %s exceeded the maximum of %s" % (
-            length,
-            _MAX_PAYLOAD_LENGTH,
-        )
+        message = f"Payload length of {length} exceeded the maximum of {_MAX_PAYLOAD_LENGTH}"
+
         super().__init__(message)
 
 
@@ -473,7 +469,7 @@ class EventStreamMessage:
 
     def to_response_dict(self, status_code=200) -> Dict[str, Any]:
         message_type = self.headers.get(":message-type")
-        if message_type == "error" or message_type == "exception":
+        if message_type in ["error", "exception"]:
             status_code = 400
         return {
             "status_code": status_code,
@@ -596,8 +592,7 @@ class EventStreamBuffer:
 
     def _parse_payload(self) -> bytes:
         prelude = self._prelude
-        payload_bytes = self._data[prelude.headers_end : prelude.payload_end]
-        return payload_bytes
+        return self._data[prelude.headers_end : prelude.payload_end]
 
     def _parse_message_crc(self) -> int:
         prelude = self._prelude
@@ -606,9 +601,7 @@ class EventStreamBuffer:
         return message_crc
 
     def _parse_message_bytes(self) -> bytes:
-        # The minus 4 includes the prelude crc to the bytes to be checked
-        message_bytes = self._data[_PRELUDE_LENGTH - 4 : self._prelude.payload_end]
-        return message_bytes
+        return self._data[_PRELUDE_LENGTH - 4 : self._prelude.payload_end]
 
     def _validate_message_crc(self) -> int:
         message_crc = self._parse_message_crc()
@@ -663,8 +656,7 @@ class EventStream:
 
     async def __aiter__(self):
         async for event in self._event_generator:
-            parsed_event = self._parser.parse(event)
-            yield parsed_event
+            yield self._parser.parse(event)
 
     async def _create_raw_event_generator(self) -> AsyncGenerator:
         event_stream_buffer = EventStreamBuffer()

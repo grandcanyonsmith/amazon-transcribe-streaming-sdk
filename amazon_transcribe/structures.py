@@ -59,11 +59,7 @@ class BufferableByteStream(BufferedIOBase):
             b = memoryview(b)
             b = b.cast("B")
 
-        if read1:
-            data = self.read1(len(b))
-        else:
-            data = self.read(len(b))
-
+        data = self.read1(len(b)) if read1 else self.read(len(b))
         if data is None:
             raise BlockingIOError("readinto")
 

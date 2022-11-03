@@ -36,10 +36,7 @@ class TranscribeStreamingSerializer:
         value: Any,
         prefix: str = "x-amzn-transcribe-",
     ) -> Dict[str, str]:
-        if value is None:
-            return {}
-        else:
-            return {f"{prefix}{header}": str(value)}
+        return {} if value is None else {f"{prefix}{header}": str(value)}
 
     def _serialize_str_header(
         self, header: str, value: Optional[str]
@@ -64,9 +61,10 @@ class TranscribeStreamingSerializer:
         request_uri = "/stream-transcription"
 
         headers: Dict[str, str] = {}
-        headers.update(
-            self._serialize_str_header("language-code", request_shape.language_code)
+        headers |= self._serialize_str_header(
+            "language-code", request_shape.language_code
         )
+
         headers.update(
             self._serialize_int_header(
                 "sample-rate", request_shape.media_sample_rate_hz
@@ -134,14 +132,13 @@ class TranscribeStreamingSerializer:
 
         body = BufferableByteStream()
 
-        request = Request(
+        return Request(
             endpoint=endpoint,
             path=request_uri,
             method=method,
             headers=headers,
             body=body,
         )
-        return request
 
 
 SERIALIZED_EVENT = Tuple[Dict, bytes]

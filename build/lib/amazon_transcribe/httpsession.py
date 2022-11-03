@@ -143,9 +143,7 @@ class AwsCrtHttpSessionManager:
         connection = await asyncio.wrap_future(connect_future)
         if connection.version is not http.HttpVersion.Http2:
             connection.close()
-            raise HTTPException(
-                "HTTP/2 could not be negotiated: %s" % connection.version
-            )
+            raise HTTPException(f"HTTP/2 could not be negotiated: {connection.version}")
         return connection
 
     async def _get_connection(
@@ -154,7 +152,7 @@ class AwsCrtHttpSessionManager:
     ) -> http.HttpClientConnection:
         # TODO: Use CRT connection pooling instead of this basic kind
         if not parsed_url.hostname:
-            raise HTTPException("Invalid host name: %s" % parsed_url.hostname)
+            raise HTTPException(f"Invalid host name: {parsed_url.hostname}")
         connection_key = (
             parsed_url.scheme,
             parsed_url.hostname,
@@ -162,17 +160,16 @@ class AwsCrtHttpSessionManager:
         )
         if connection_key in self._connections:
             return self._connections[connection_key]
-        else:
-            connection = await self._create_connection(parsed_url)
-            self._connections[connection_key] = connection
-            return connection
+        connection = await self._create_connection(parsed_url)
+        self._connections[connection_key] = connection
+        return connection
 
     def _get_path(self, parsed_url: ParseResult) -> str:
         path = parsed_url.path
         if not path:
             path = "/"
         if parsed_url.query:
-            path = path + "?" + parsed_url.query
+            path = f"{path}?{parsed_url.query}"
         return path
 
     async def make_request(

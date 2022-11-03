@@ -124,7 +124,7 @@ class TranscribeStreamingResponseParser:
             body_stream, TranscribeStreamingEventParser()
         )
 
-        parsed_response = StartStreamTranscriptionResponse(
+        return StartStreamTranscriptionResponse(
             transcript_result_stream=transcript_result_stream,
             request_id=request_id,
             language_code=language_code,
@@ -141,17 +141,12 @@ class TranscribeStreamingResponseParser:
             partial_results_stability=partial_results_stability,
             language_model_name=language_model_name,
         )
-        return parsed_response
 
     def _raw_value_to_int(self, value: Optional[str]) -> Optional[int]:
-        if value:
-            return int(value)
-        return None
+        return int(value) if value else None
 
     def _raw_value_to_bool(self, value: Optional[str]) -> Optional[bool]:
-        if value is not None:
-            return ensure_boolean(value)
-        return None
+        return ensure_boolean(value) if value is not None else None
 
 
 class TranscribeStreamingEventParser:

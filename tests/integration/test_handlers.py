@@ -22,11 +22,9 @@ class TestEventHandler:
     def chunks(self):
         wav_chunks = []
         with open(TEST_WAV_PATH, "rb") as f:
-            chunk = f.read(self.CHUNK_SIZE)
-            while chunk:
+            while chunk := f.read(self.CHUNK_SIZE):
                 wav_chunks.append(chunk)
-                chunk = f.read(self.CHUNK_SIZE)
-            assert len(wav_chunks) > 0
+            assert wav_chunks
         return wav_chunks
 
     @pytest.mark.asyncio

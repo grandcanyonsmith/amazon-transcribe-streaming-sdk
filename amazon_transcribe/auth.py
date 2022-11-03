@@ -42,8 +42,7 @@ class AwsCrtCredentialResolver(CredentialResolver):
         self._crt_resolver = AwsCredentialsProvider.new_default_chain(eventloop)
 
     async def get_credentials(self) -> Optional[Credentials]:
-        credentials = await asyncio.wrap_future(self._crt_resolver.get_credentials())
-        return credentials
+        return await asyncio.wrap_future(self._crt_resolver.get_credentials())
 
 
 class StaticCredentialResolver(Credentials, CredentialResolver):

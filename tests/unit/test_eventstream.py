@@ -284,9 +284,9 @@ def test_partial_message():
     mid_point = 15
     event_buffer.add_data(data[:mid_point])
     messages = list(event_buffer)
-    assert messages == []
+    assert not messages
 
-    event_buffer.add_data(data[mid_point : len(data)])
+    event_buffer.add_data(data[mid_point:])
     for message in event_buffer:
         assert_message_equal(message, EMPTY_MESSAGE[1])
 

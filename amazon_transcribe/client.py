@@ -187,7 +187,7 @@ class TranscribeStreamingClient:
             body_bytes = await response.consume_body()
             raise self._response_parser.parse_exception(resolved_response, body_bytes)
         elif status_code != 200:
-            raise RuntimeError("Unexpected status code encountered: %s" % status_code)
+            raise RuntimeError(f"Unexpected status code encountered: {status_code}")
 
         parsed_response = (
             self._response_parser.parse_start_stream_transcription_response(

@@ -14,8 +14,7 @@ async def json_from_body(response):
         else:
             break
     response_body.seek(0)
-    response_json = json.load(response_body)
-    return response_json
+    return json.load(response_body)
 
 
 @pytest.mark.asyncio
